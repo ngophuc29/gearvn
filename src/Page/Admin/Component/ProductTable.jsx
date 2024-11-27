@@ -62,6 +62,28 @@ const ProductTable = () => {
         };
         fetchProducts();
     }, []);
+
+    const handleChange = (e) => {
+        const { name, value } = e.target;
+        setFormData({
+            ...formData,
+            [name]: value,
+        });
+    };
+    const [errors, setErrors] = useState({});
+    const [nhacungcaps, setNhaCungCaps] = useState([]);
+    const [thuonghieus, setThuongHieus] = useState([]);
+    const [loaisanphams, setLoaiSanPhams] = useState([]);
+    useEffect(() => {
+        // Lấy danh sách nhà cung cấp, thương hiệu, và loại sản phẩm từ backend
+        axios.get('http://localhost:9998/api/san-pham/nhacungcap')
+            .then(response => setNhaCungCaps(response.data.data.nhacungcap));
+        axios.get('http://localhost:9998/api/san-pham/thuonghieu')
+            .then(response => setThuongHieus(response.data.data.thuonghieu));
+        axios.get('http://localhost:9998/api/san-pham/category')
+            .then(response => setLoaiSanPhams(response.data.data.loaisanPham));
+    }, []);
+
     const fetchProducts = async () => {
         try {
             const response = await axios.get("http://localhost:9998/api/san-pham/laptop");
@@ -217,7 +239,7 @@ const ProductTable = () => {
 
 
 
-    
+
     // Xử lý xóa sản phẩm
     const handleDelete = async (id) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
@@ -264,6 +286,17 @@ const ProductTable = () => {
         // Cập nhật state cho trang hiện tại
         setCurrentPage(pageNumber);
     };
+    const handleNCCChange = (e) => {
+        const selectedTenNCC = e.target.value;
+        const selectedNCC = nhacungcaps.find(ncc => ncc.tenNhaCungCap === selectedTenNCC);
+
+        setFormData({
+            ...formData,
+            tenNCC: selectedTenNCC,
+            diaChiNCC: selectedNCC ? selectedNCC.diaChi : '',
+            emailNCC: selectedNCC ? selectedNCC.email : '',
+        });
+    };
 
     return (
         <div className="container-fluid">
@@ -306,16 +339,16 @@ const ProductTable = () => {
                                     <td>{product.chiTietNhapHangs[0]?.chiPhiLuuKho}</td>
                                     <td>{product.lapTop?.tinhNangKhac}</td>
                                     <td>
-                                        <div style={{display:'flex',justifyContent:'space-around'}}>
+                                        <div style={{ display: 'flex', justifyContent: 'space-around' }}>
 
                                             <button className="btn btn-primary"
-                                                style={{ width: "90px", height: "50px" ,textAlign: "center" }}
+                                                style={{ width: "90px", height: "50px", textAlign: "center" }}
                                                 onClick={() => handleUpdate(product)}>
-                                            Cập nhật
-                                        </button>
+                                                Cập nhật
+                                            </button>
                                             <button className="btn btn-danger" onClick={() => handleDelete(product.maSanPham)}>
-                                            Xóa
-                                        </button>
+                                                Xóa
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
@@ -324,33 +357,33 @@ const ProductTable = () => {
                     </table>
 
                     {/* Pagination Controls */}
-                        <div style={{ marginTop: '20px', textAlign: 'center' }}>
-                            <button
-                                onClick={() => handlePageChange(currentPage - 1)}
-                                disabled={currentPage === 1}
-                                style={buttonStyle(currentPage === 1, false)}
-                            >
-                                Prev
-                            </button>
+                    <div style={{ marginTop: '20px', textAlign: 'center' }}>
+                        <button
+                            onClick={() => handlePageChange(currentPage - 1)}
+                            disabled={currentPage === 1}
+                            style={buttonStyle(currentPage === 1, false)}
+                        >
+                            Prev
+                        </button>
 
-                            {[...Array(totalPages)].map((_, index) => (
-                                <button
-                                    key={index}
-                                    onClick={() => handlePageChange(index + 1)}
-                                    style={buttonStyle(false, currentPage === index + 1)}
-                                >
-                                    {index + 1}
-                                </button>
-                            ))}
-
+                        {[...Array(totalPages)].map((_, index) => (
                             <button
-                                onClick={() => handlePageChange(currentPage + 1)}
-                                disabled={currentPage === totalPages}
-                                style={buttonStyle(currentPage === totalPages, false)}
+                                key={index}
+                                onClick={() => handlePageChange(index + 1)}
+                                style={buttonStyle(false, currentPage === index + 1)}
                             >
-                                Next
+                                {index + 1}
                             </button>
-                        </div>
+                        ))}
+
+                        <button
+                            onClick={() => handlePageChange(currentPage + 1)}
+                            disabled={currentPage === totalPages}
+                            style={buttonStyle(currentPage === totalPages, false)}
+                        >
+                            Next
+                        </button>
+                    </div>
 
                 </>
             )}
@@ -532,57 +565,116 @@ const ProductTable = () => {
                                     onChange={handleInputChange}
                                 />
                             </div>
+                            {/* Nhà cung cấp */}
                             <div className="form-group col-md-4">
-                                <label>Tên Nhà Cung Cấp</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
+                                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Tên nhà cung cấp</label>
+                                <select
                                     name="tenNCC"
                                     value={formData.tenNCC}
-                                    onChange={handleInputChange}
-                                />
+                                    onChange={handleNCCChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #ddd',
+                                        boxSizing: 'border-box'
+                                    }}
+                                >
+                                    <option value="">Chọn nhà cung cấp</option>
+                                    {nhacungcaps.map((ncc) => (
+                                        <option key={ncc.maNhaCungCap} value={ncc.tenNhaCungCap}>{ncc.tenNhaCungCap}</option>
+                                    ))}
+                                </select>
+                                {errors.tenNCC && <div style={{ color: 'red', fontSize: '14px' }}>{errors.tenNCC}</div>}
                             </div>
+
+                            {/* Hiển thị địa chỉ nhà cung cấp */}
                             <div className="form-group col-md-4">
-                                <label>Địa Chỉ Nhà Cung Cấp</label>
+                                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Địa chỉ nhà cung cấp</label>
                                 <input
                                     type="text"
-                                    className="form-control"
                                     name="diaChiNCC"
                                     value={formData.diaChiNCC}
-                                    onChange={handleInputChange}
+                                    readOnly
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #ddd',
+                                        boxSizing: 'border-box',
+                                        backgroundColor: '#f1f1f1'
+                                    }}
                                 />
                             </div>
                         </div>
                         <div className="form-row">
                             <div className="form-group col-md-4">
-                                <label>Email Nhà Cung Cấp</label>
+                                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Email nhà cung cấp</label>
                                 <input
-                                    type="text"
-                                    className="form-control"
+                                    type="email"
                                     name="emailNCC"
                                     value={formData.emailNCC}
-                                    onChange={handleInputChange}
+                                    readOnly
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #ddd',
+                                        boxSizing: 'border-box',
+                                        backgroundColor: '#f1f1f1'
+                                    }}
                                 />
                             </div>
+
+                            {/* Thương hiệu */}
                             <div className="form-group col-md-4">
-                                <label>Tên Thương Hiệu</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
+                                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Tên thương hiệu</label>
+                                <select
                                     name="tenThuongHieu"
                                     value={formData.tenThuongHieu}
-                                    onChange={handleInputChange}
-                                />
+                                    onChange={handleChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #ddd',
+                                        boxSizing: 'border-box'
+                                    }}
+                                >
+                                    <option value="">Chọn thương hiệu</option>
+                                    {thuonghieus.map((thuonghieu) => (
+                                        <option key={thuonghieu.maThuongHieu} value={thuonghieu.tenThuongHieu}>{thuonghieu.tenThuongHieu}</option>
+                                    ))}
+                                </select>
+                                {errors.tenThuongHieu && <div style={{ color: 'red', fontSize: '14px' }}>{errors.tenThuongHieu}</div>}
                             </div>
+
+                            {/* Hạng mục */}
                             <div className="form-group col-md-4">
-                                <label>Tên Hạng Mục</label>
-                                <input
-                                    type="text"
-                                    className="form-control"
+                                <label style={{ display: 'block', fontWeight: 'bold', marginBottom: '5px' }}>Tên hạng mục</label>
+                                <select
                                     name="tenHangMuc"
                                     value={formData.tenHangMuc}
-                                    onChange={handleInputChange}
-                                />
+                                    onChange={handleChange}
+                                    style={{
+                                        width: '100%',
+                                        padding: '10px',
+                                        fontSize: '16px',
+                                        borderRadius: '4px',
+                                        border: '1px solid #ddd',
+                                        boxSizing: 'border-box'
+                                    }}
+                                >
+                                    <option value="">Chọn hạng mục</option>
+                                    {loaisanphams.map((loaisp) => (
+                                        <option key={loaisp.maLoaiSanPham} value={loaisp.tenLoaiSanPham}>{loaisp.tenLoaiSanPham}</option>
+                                    ))}
+                                </select>
+                                {errors.tenHangMuc && <div style={{ color: 'red', fontSize: '14px' }}>{errors.tenHangMuc}</div>}
                             </div>
                         </div>
                         <div className="form-row">

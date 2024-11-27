@@ -1,24 +1,17 @@
-
-import { useLocation } from "react-router-dom";
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import ProductItem from '../components/ProductItem';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom'; // Đảm bảo thêm useLocation ở đây
+import ProductItem from '../components/ProductItem'; // Import ProductItem nếu chưa có
 
 const ProductDetail = () => {
     const location = useLocation();
     const { product } = location.state;
     const [productList, setProductList] = useState([]);
-
-
-    const [filteredProducts, setFilteredProducts] = useState([]);
-    const [currentCategory, setCurrentCategory] = useState('all');
-    const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 12;
-
     const [loading, setLoading] = useState(false);
-    const [loaisanPhams, setLoaiSanPhams] = useState([]);
     const [error, setError] = useState(null);
+    const [cart, setCart] = useState(null);  // Lưu trữ giỏ hàng trong state
+    const navigate = useNavigate();
+
     useEffect(() => {
         const fetchProducts = async () => {
             setLoading(true);
@@ -34,13 +27,39 @@ const ProductDetail = () => {
         };
         fetchProducts();
     }, []);
+
+    const priceAfterDiscount = product.chiTietNhapHangs[0].donGiaNhap * (1 + product.chiTietNhapHangs[0].phanTramLoiNhuan / 100);
+
+    // Hàm thêm sản phẩm vào giỏ hàng
+    const addToCart = async () => {
+        try {
+            // Kiểm tra lại giá trị của 'id'
+            console.log('Product ID:', product.maSanPham); // In ra giá trị của maSanPham để đảm bảo nó có đúng giá trị
+
+           const response = await axios.post('http://localhost:9998/api/cart/add-to-cart', null, {
+               params: { id: product.maSanPham },
+    });
+
+            if (response.data.status === 'success') {
+                setCart(response.data.data);
+                alert('Sản phẩm đã được thêm vào giỏ hàng!');
+            } else {
+                alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Không thể kết nối với API giỏ hàng');
+        }
+    };
+
+    const handleBuyNow = () => {
+        // Thực hiện hành động khi người dùng nhấn "MUA NGAY"
+        alert('Đang chuyển đến trang thanh toán!');
+    };
+
     const getCurrentProducts = () => {
         return productList.sort(() => 0.5 - Math.random()).slice(0, 4);
     };
-
-
-    // Tính giá sau giảm giá (nếu có)
-    const priceAfterDiscount = product.chiTietNhapHangs[0].donGiaNhap * (1 + product.chiTietNhapHangs[0].phanTramLoiNhuan / 100);
 
     return (
         <div className="product-detail container">
@@ -57,10 +76,10 @@ const ProductDetail = () => {
                     <h1 className="product-title">{product.tenSanPham}</h1>
                     <p className="price">
                         <span className="current-price">
-                            {priceAfterDiscount.toLocaleString('vi-VN')}₫
+                            {product.chiTietNhapHangs[0].donGiaNhap.toLocaleString('vi-VN')}₫
                         </span>
                         <span className="old-price">
-                            {product.chiTietNhapHangs[0].donGiaNhap.toLocaleString('vi-VN')}₫
+                            {priceAfterDiscount.toLocaleString('vi-VN')}₫
                         </span>
                         <span className="discount">
                             -{product.chiTietNhapHangs[0].phanTramLoiNhuan}%
@@ -70,10 +89,12 @@ const ProductDetail = () => {
                         <h5 className="promotion_heading">🎁 Quà tặng khuyến mãi</h5>
                         <p className="promotion_desc">Miễn phí giao hàng toàn quốc</p>
                     </div>
-                    <button className="btn btn-warning btn-lg" style={{ marginRight: 10 }}>
+                    <button className="btn btn-warning btn-lg" style={{ marginRight: 10 }} onClick={addToCart}>
                         🐱‍🏍 THÊM VÀO GIỎ HÀNG
                     </button>
-                    <button className="btn btn-danger btn-lg">MUA NGAY</button>
+                    <button className="btn btn-danger btn-lg" onClick={handleBuyNow}>
+                        MUA NGAY
+                    </button>
 
                     <ul className="features">
                         <p>✔ Bảo hành chính hãng 12 tháng.</p>
@@ -126,9 +147,9 @@ const ProductDetail = () => {
                 <p>Địa chỉ: {product.chiTietNhapHangs[0].nhaCungCap.diaChi}</p>
                 <p>Email: {product.chiTietNhapHangs[0].nhaCungCap.email}</p>
             </div>
-            <div className="supplier-info mt-4">
-                <h3>Các sản phẩm khác </h3>
 
+            <div className="supplier-info mt-4">
+                <h3>Các sản phẩm khác</h3>
 
                 {loading ? (
                     <div className="text-center w-100">
@@ -141,7 +162,6 @@ const ProductDetail = () => {
                     <div className="alert alert-danger">{error}</div>
                 ) : productList.length > 0 ? (
                     <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-
                         {getCurrentProducts().map((product, index) => <ProductItem key={index} product={product} />)}
                     </div>
                 ) : (

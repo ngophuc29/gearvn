@@ -8,6 +8,7 @@ const ProductItem = ({ product }) => {
     const formattedPrice = typeof product.chiTietNhapHangs[0]?.donGiaNhap === 'number'
         ? product.chiTietNhapHangs[0].donGiaNhap.toLocaleString('vi-VN') + '₫'
         : 'Liên hệ';
+    const priceAfterDiscount = product.chiTietNhapHangs[0].donGiaNhap * (1 + product.chiTietNhapHangs[0].phanTramLoiNhuan / 100);
 
     // Hình ảnh sản phẩm
     const imageUrl = product.hinhAnh.url;
@@ -30,8 +31,10 @@ const ProductItem = ({ product }) => {
                         {product.lapTop.manHinh}, {product.lapTop.ram}GB RAM
                     </div>
                     <div className="product-price-container">
-                        {hasDiscount && <div className="product-discount">{formattedPrice}</div>}
+                        {hasDiscount && <div className="product-discount">{priceAfterDiscount.toLocaleString('vi-VN') }đ</div>}
+                        {/* <div className="product-price">{formattedPrice}</div> */}
                         <div className="product-price">{formattedPrice}</div>
+
                     </div>
                 </div>
                 {hasDiscount && (

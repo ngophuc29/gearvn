@@ -1,18 +1,33 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const CartComponent = () => {
-    const navigate=useNavigate()
+    const navigate = useNavigate();
     const [cartItems, setCartItems] = useState([]);
     const [currentUser, setCurrentUser] = useState(null);
 
     // Load cart and user data from localStorage
     useEffect(() => {
-        const cart = JSON.parse(localStorage.getItem("cart")) || [];
         const user = localStorage.getItem("currentUser");
-        setCartItems(cart);
         setCurrentUser(user);
-    }, []);
+
+        // Lấy giỏ hàng từ API
+        if (user) {
+            axios.get("http://localhost:9998/api/cart", {
+                headers: {
+                    Authorization: `Bearer ${user.token}` // Nếu bạn có token người dùng
+                }
+            })
+                .then((response) => {
+                    setCartItems(response.data.data.chiTietGioHangs); // Giả sử cấu trúc trả về có trường `chiTietGioHangs`
+                })
+                .catch((error) => {
+                    console.error("Lỗi khi tải giỏ hàng", error);
+                    alert("Không thể tải giỏ hàng!");
+                });
+        }
+    }, [currentUser]);
 
     const handleCheckout = () => {
         if (!currentUser) {
@@ -27,8 +42,7 @@ const CartComponent = () => {
 
         // Thanh toán thành công
         alert("Thanh toán thành công!");
-        localStorage.removeItem("cart"); // Xóa giỏ hàng
-        setCartItems([]); // Reset giao diện
+        setCartItems([]); // Reset giao diện giỏ hàng
     };
 
     return (
@@ -40,7 +54,15 @@ const CartComponent = () => {
                         {cartItems.length > 0 ? (
                             cartItems.map((item, index) => (
                                 <div key={index}>
-                                    <p>{item.name} - {item.quantity} x {item.price}₫</p>
+                                    <p>
+                                        <img
+                                            src={item.sanPham.hinhAnh.url}
+                                            alt={item.sanPham.tenSanPham}
+                                            style={{ width: "50px", height: "auto" }}
+                                        />
+                                        <strong>{item.sanPham.tenSanPham}</strong> - {item.soLuong} x{" "}
+                                        {item.sanPham.lapTop.cpu} - {item.discount.toLocaleString()}₫
+                                    </p>
                                 </div>
                             ))
                         ) : (
@@ -53,7 +75,10 @@ const CartComponent = () => {
                     <div id="bill-table">
                         <p>
                             Tổng tiền:{" "}
-                            {cartItems.reduce((total, item) => total + item.quantity * item.price, 0).toLocaleString()}₫
+                            {cartItems.reduce(
+                                (total, item) => total + item.soLuong * (item.discount || 0),
+                                0
+                            ).toLocaleString()}₫
                         </p>
                     </div>
                     <button
@@ -63,8 +88,9 @@ const CartComponent = () => {
                     >
                         Thanh toán
                     </button>
-                    <div className="btn btn-primary mt-3"
-                    onClick={()=>navigate("/product")}
+                    <div
+                        className="btn btn-primary mt-3"
+                        onClick={() => navigate("/product")}
                     >
                         Tiếp tục mua hàng
                     </div>
