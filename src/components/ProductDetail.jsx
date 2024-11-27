@@ -33,12 +33,10 @@ const ProductDetail = () => {
     // Hàm thêm sản phẩm vào giỏ hàng
     const addToCart = async () => {
         try {
-            // Kiểm tra lại giá trị của 'id'
-            console.log('Product ID:', product.maSanPham); // In ra giá trị của maSanPham để đảm bảo nó có đúng giá trị
-
-           const response = await axios.post('http://localhost:9998/api/cart/add-to-cart', null, {
-               params: { id: product.maSanPham },
-    });
+            console.log('Cart before adding:', cart); // Kiểm tra giỏ hàng trước khi thêm sản phẩm
+            const response = await axios.post('http://localhost:9998/api/cart/add-to-cart', null, {
+                params: { id: product.maSanPham },
+            });
 
             if (response.data.status === 'success') {
                 setCart(response.data.data);
@@ -51,6 +49,7 @@ const ProductDetail = () => {
             alert('Không thể kết nối với API giỏ hàng');
         }
     };
+
 
     const handleBuyNow = () => {
         // Thực hiện hành động khi người dùng nhấn "MUA NGAY"
