@@ -100,12 +100,12 @@ const Sidebar = () => {
                         </a>
                         {isOrderMenuOpen && (
                             <ul className="treeview-menu">
-                                <li>
+                                <li onClick={() => navigate("/admin/orderList")}>
                                     <a href="#">
                                         <i className="fa fa-circle-o"></i> Danh Sách Đơn Hàng
                                     </a>
                                 </li>
-                                <li>
+                                <li onClick={() => navigate("/admin/orderStatistics")}>
                                     <a href="#">
                                         <i className="fa fa-circle-o"></i> Thống Kê Đơn Hàng
                                     </a>

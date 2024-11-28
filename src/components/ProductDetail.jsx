@@ -31,18 +31,61 @@ const ProductDetail = () => {
     const priceAfterDiscount = product.chiTietNhapHangs[0].donGiaNhap * (1 + product.chiTietNhapHangs[0].phanTramLoiNhuan / 100);
 
     // Hàm thêm sản phẩm vào giỏ hàng
+    // const addToCart = async () => {
+    //     try {
+    //         console.log('Cart before adding:', cart); // Kiểm tra giỏ hàng trước khi thêm sản phẩm
+    //         const response = await axios.post('http://localhost:9998/api/cart/add-to-cart', null, {
+    //             params: { id: product.maSanPham },
+    //             withCredentials: true
+    //         });
+
+    //         if (response.data.status === 'success') {
+    //             setCart(response.data.data);
+    //             console.log('Cart after adding:', response.data.data); // Kiểm tra giỏ hàng sau khi thêm sản phẩm
+    //             alert('Sản phẩm đã được thêm vào giỏ hàng!');
+    //         } else {
+    //             alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng');
+    //         }
+    //     } catch (error) {
+    //         console.error(error);
+    //         alert('Không thể kết nối với API giỏ hàng');
+    //     }
+    // };
+    
     const addToCart = async () => {
         try {
             console.log('Cart before adding:', cart); // Kiểm tra giỏ hàng trước khi thêm sản phẩm
             const response = await axios.post('http://localhost:9998/api/cart/add-to-cart', null, {
                 params: { id: product.maSanPham },
+                withCredentials: true
             });
 
             if (response.data.status === 'success') {
                 setCart(response.data.data);
+                console.log('Cart after adding:', response.data.data); // Kiểm tra giỏ hàng sau khi thêm sản phẩm
                 alert('Sản phẩm đã được thêm vào giỏ hàng!');
+                return true;
             } else {
                 alert('Có lỗi xảy ra khi thêm sản phẩm vào giỏ hàng');
+                return false;
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Không thể kết nối với API giỏ hàng');
+            return false;
+        }
+    };
+    const viewCart = async () => {
+        try {
+            const response = await axios.get('http://localhost:9998/api/cart/view-cart', {
+                withCredentials: true
+            });
+
+            if (response.status === 200) {
+                setCart(response.data);
+                console.log('Current cart:', response.data);
+            } else {
+                alert('Có lỗi xảy ra khi lấy giỏ hàng');
             }
         } catch (error) {
             console.error(error);
@@ -50,10 +93,28 @@ const ProductDetail = () => {
         }
     };
 
+    const clearCart = async () => {
+        try {
+            const response = await axios.delete('http://localhost:9998/api/cart/clear-cart', {
+                withCredentials: true
+            });
 
-    const handleBuyNow = () => {
-        // Thực hiện hành động khi người dùng nhấn "MUA NGAY"
-        alert('Đang chuyển đến trang thanh toán!');
+            if (response.status === 200) {
+                setCart(null);
+                alert('Giỏ hàng đã được xóa sạch!');
+            } else {
+                alert('Có lỗi xảy ra khi xóa giỏ hàng');
+            }
+        } catch (error) {
+            console.error(error);
+            alert('Không thể kết nối với API giỏ hàng');
+        }
+    };
+    const handleBuyNow = async () => {
+        const success = await addToCart();
+        if (success) {
+            navigate("/cart");
+        }
     };
 
     const getCurrentProducts = () => {
@@ -94,7 +155,9 @@ const ProductDetail = () => {
                     <button className="btn btn-danger btn-lg" onClick={handleBuyNow}>
                         MUA NGAY
                     </button>
-
+                    
+                    <button onClick={clearCart}>Xóa toàn bộ giỏ hàng</button>
+                    <button onClick={viewCart}>Xem giỏ hàng</button>
                     <ul className="features">
                         <p>✔ Bảo hành chính hãng 12 tháng.</p>
                         <p>✔ Hỗ trợ đổi trả trong 7 ngày.</p>

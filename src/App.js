@@ -22,6 +22,9 @@ import SupplierTable from "./Page/Admin/Component/SupplierTable";
 import AddSupplier from "./Page/Admin/Component/AddSupplierForm";
 import BrandTable from "./Page/Admin/Component/BrandTable";
 import AddBrandForm from "./Page/Admin/Component/AddBrandForm";
+import ReceiverInfoPage from "./Page/ReceiverInfoPage";
+import OrderTable from "./Page/Admin/Component/OrderTable";
+import OrderStatistics from "./Page/Admin/Component/OrderStatistics";
 // Layouts
 function UserLayout({ children }) {
   return (
@@ -96,6 +99,16 @@ function App() {
             }
           />
 
+          
+          <Route
+            path="/receiver-info"
+            element={
+              <UserLayout>
+                <ReceiverInfoPage />
+              </UserLayout>
+            }
+          />
+          
           
 
           {/* Tuyến đường dành cho quản trị */}
@@ -265,6 +278,46 @@ function App() {
 
 
                     <AddBrandForm />
+                  </div>
+                </div>
+              </AdminLayout>
+            }
+          />
+
+          {/* Order */}
+          <Route
+            path="/admin/orderList"
+            element={
+              <AdminLayout>
+                <HeaderAdmin />
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '17%' }}>
+
+                    <SidebarAdmin />
+                  </div>
+                  <div style={{ width: '80%' }}>
+
+
+                    <OrderTable />
+                  </div>
+                </div>
+              </AdminLayout>
+            }
+          />
+          <Route
+            path="/admin/orderStatistics"
+            element={
+              <AdminLayout>
+                <HeaderAdmin />
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '17%' }}>
+
+                    <SidebarAdmin />
+                  </div>
+                  <div style={{ width: '80%' }}>
+
+
+                    <OrderStatistics />
                   </div>
                 </div>
               </AdminLayout>
