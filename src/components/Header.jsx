@@ -116,7 +116,7 @@ const navigate=useNavigate()
                                 <i className="fa fa-shop"></i> CỬA HÀNG
                             </a>
                         </li>
-                        <li className="nav-item dropdown">
+                        {/* <li className="nav-item dropdown">
                             <a className="nav-link dropdown-toggle" href="#" id="navbardrop" data-toggle="dropdown">
                                 <i className="fa fa-list"></i> SẢN PHẨM
                             </a>
@@ -146,17 +146,19 @@ const navigate=useNavigate()
                                     Vali kéo siêu nhẹ
                                 </a>
                             </div>
-                        </li>
-                        <li className="nav-item">
-                            <a className="nav-link" href="../html/gio-hang.html">
+                        </li> */}
+                        <li className="nav-item"
+                        onClick={()=>navigate("/cart")}
+                        >
+                            <a className="nav-link" href="">
                                 <i className="fa-solid fa-money-check-dollar"></i> THANH TOÁN
                             </a>
                         </li>
-                        <li className="nav-item">
+                        {/* <li className="nav-item">
                             <a className="nav-link" href="../html/blog.html">
                                 <i className="fa-solid fa-comments"></i> BÀI VIẾT
                             </a>
-                        </li>
+                        </li> */}
                     </ul>
 
                     <form id="nav-form-search" className="form-inline ml-auto" action="javascript:void(0);">

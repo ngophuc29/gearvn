@@ -1,55 +1,66 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useLocation, useNavigate } from 'react-router-dom';
 import ProductItem from '../components/ProductItem';
 
 const ProductList = () => {
     const [productList, setProductList] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
-    const [currentCategory, setCurrentCategory] = useState('all');
     const [currentPage, setCurrentPage] = useState(1);
     const itemsPerPage = 12;
-    
-    const [loading, setLoading] = useState(false);
-    const [loaisanPhams, setLoaiSanPhams] = useState([]);
-    const [error, setError] = useState(null);
 
+    const [loading, setLoading] = useState(false);
+    const [error, setError] = useState(null);
+    const [thuongHieus, setThuongHieus] = useState([]);
+    const location = useLocation();
+    const navigate = useNavigate();
+
+    const query = new URLSearchParams(location.search);
+    const thuonghieu = query.get('thuonghieu') || 'all';
+
+    const [currentCategory, setCurrentCategory] = useState(thuonghieu);
+
+    // Fetch danh sách hãng sản phẩm
     useEffect(() => {
         setLoading(true);
-        axios.get('http://localhost:9998/api/san-pham/category')
+        axios.get('http://localhost:9998/api/san-pham/thuonghieu')
             .then((response) => {
-                setLoaiSanPhams(response.data.data.loaisanPham || []);
+                setThuongHieus(response.data.data.thuonghieu || []);
                 setLoading(false);
             })
             .catch((error) => {
-                setError('Có lỗi xảy ra khi lấy dữ liệu danh mục.');
+                setError('Có lỗi xảy ra khi lấy dữ liệu hãng sản phẩm.');
                 setLoading(false);
             });
     }, []);
 
-    useEffect(() => {
-        const fetchProducts = async () => {
-            setLoading(true);
-            try {
-                const response = await axios.get('http://localhost:9998/api/san-pham/laptop');
-                const products = response.data.data.sanphams || [];
-                setProductList(products);
-            } catch (error) {
-                setError('Có lỗi xảy ra khi lấy dữ liệu sản phẩm.');
-            } finally {
-                setLoading(false);
-            }
-        };
-        fetchProducts();
-    }, []);
+    // Fetch danh sách sản phẩm
+    const fetchProducts = async (category) => {
+        setLoading(true);
+        try {
+            const url = category === 'all'
+                ? 'http://localhost:9998/api/san-pham/laptop'
+                : `http://localhost:9998/api/san-pham/laptop?thuonghieu=${category}`;
+            const response = await axios.get(url);
+            const products = response.data.data.sanphams || [];
+            setProductList(products);
+        } catch (error) {
+            setError('Có lỗi xảy ra khi lấy dữ liệu sản phẩm.');
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
-        const filtered =
-            currentCategory === 'all'
-                ? productList
-                : productList.filter((product) => product.category === currentCategory);
-        setFilteredProducts(filtered);
+        console.log("URL thuonghieu:", thuonghieu); // Log giá trị thuonghieu từ URL
+        fetchProducts(thuonghieu);
+        setCurrentCategory(thuonghieu); // Đồng bộ currentCategory với URL
+    }, [thuonghieu]);
+
+    useEffect(() => {
+        setFilteredProducts(productList);
         setCurrentPage(1);
-    }, [currentCategory, productList]);
+    }, [productList]);
 
     const totalPages = Math.ceil(filteredProducts.length / itemsPerPage);
 
@@ -66,29 +77,30 @@ const ProductList = () => {
         });
     };
 
-    const handleCategoryChange = (category) => {
-        const selectedCategory = loaisanPhams.find((cat) => cat.maLoaiSanPham === category)?.tenLoaiSanPham || 'Danh mục không xác định';
-        alert(`Bạn đã chọn: ${selectedCategory}`);
-        setCurrentCategory(category);
+    const handleCategoryChange = (categoryId) => {
+        console.log("Selected Category ID in ProductList:", categoryId); // Log giá trị categoryId trong ProductList
+        setCurrentCategory(categoryId);
+        navigate(`/product?thuonghieu=${categoryId}`);
     };
 
     return (
-        <div className="row">
+        <div className="row" style={{ margin: "20px 20px" }}>
             <div className="col-md-3 d-none d-sm-block" id="aside">
-                <h4>Danh mục sản phẩm</h4>
-                <div className="list-group">
-                    {[{ maLoaiSanPham: 'all', tenLoaiSanPham: 'Tất cả sản phẩm' }, ...loaisanPhams].map((category) => (
-                        <button
-                            key={category.maLoaiSanPham}
-                            className={`list-group-item list-group-item-action ${currentCategory === category.maLoaiSanPham ? 'active' : ''}`}
-                            onClick={() => handleCategoryChange(category.maLoaiSanPham)}
-                        >
-                            {category.tenLoaiSanPham}
-                        </button>
-                    ))}
+                <div style={{ margin: "0 20px 0 0" }}>
+                    <h4>Danh mục Hãng</h4>
+                    <div className="list-group">
+                        {[{ maThuongHieu: 'all', tenThuongHieu: 'Tất cả Hãng' }, ...thuongHieus].map((hang) => (
+                            <button
+                                key={hang.maThuongHieu}
+                                className={`list-group-item list-group-item-action ${currentCategory === String(hang.maThuongHieu) ? 'active' : ''}`}
+                                onClick={() => handleCategoryChange(hang.maThuongHieu)}
+                            >
+                                {hang.tenThuongHieu}
+                            </button>
+                        ))}
+                    </div>
                 </div>
             </div>
-
             <div className="col-md-9 col-sm-12">
                 <div id="productList" className="row">
                     {loading ? (
