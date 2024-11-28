@@ -190,7 +190,8 @@ const AddProductForm = () => {
 
 
     return (
-        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)' }}>
+        <div style={{ maxWidth: '900px', margin: '0 auto', padding: '20px', backgroundColor: '#f9f9f9', borderRadius: '8px', boxShadow: '0 2px 10px rgba(0, 0, 0, 0.1)',  marginTop:100
+ }}>
             <h1 style={{ textAlign: 'center', color: '#333' }}>Thêm Sản Phẩm</h1>
             <form onSubmit={handleSubmit} style={{ display: 'grid', gap: '15px', gridTemplateColumns: 'repeat(auto-fill, minmax(250px, 1fr))' }}>
                 {['tenSanPham', 'heDieuHanh', 'manHinh', 'ram', 'rom', 'cpu', 'cardDoHoa', 'pin', 'trongLuong', 'mauSac', 'loaiPin', 'donGiaNhapNCC', 'hinhAnh'].map((field, index) => (

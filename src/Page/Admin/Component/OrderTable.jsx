@@ -5,7 +5,7 @@ import "bootstrap/dist/css/bootstrap.min.css";
 const OrderTable = () => {
     const [orders, setOrders] = useState([]); // Dữ liệu đơn hàng
     const [currentPage, setCurrentPage] = useState(1); // Trang hiện tại
-    const itemsPerPage = 10; // Số lượng đơn hàng trên mỗi trang
+    const itemsPerPage = 7; // Số lượng đơn hàng trên mỗi trang
 
     // Gọi API lấy dữ liệu đơn hàng
     useEffect(() => {
@@ -32,7 +32,7 @@ const OrderTable = () => {
     };
 
     return (
-        <div className="container mt-4">
+        <div className="container  " style={{ marginTop: 90 }}>
             <h1 className="text-center mb-4">Danh sách đơn hàng</h1>
             <table className="table table-bordered table-striped">
                 <thead className="table-dark">

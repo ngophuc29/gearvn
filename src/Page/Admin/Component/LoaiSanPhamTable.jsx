@@ -84,7 +84,7 @@ const LoaiSanPhamTable = () => {
     });
 
     return (
-        <div>
+        <div style={{ marginTop: 100 }}>
             <h1>Danh Sách Loại Sản Phẩm</h1>
             {loaisanPhams.length === 0 ? (
                 <p>Không có dữ liệu.</p>

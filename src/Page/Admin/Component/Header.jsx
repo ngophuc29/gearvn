@@ -2,7 +2,11 @@ import React from "react";
 
 const Header = () => {
     return (
-        <header className="main-header" style={{display:'flex',justifyContent:'space-between',padding:'10px 10px'}}>
+        <header className="main-header" style={{
+            display: 'flex', justifyContent: 'space-between', padding: '10px 10px',
+            
+            position:'fixed',top:0,left:0,width:'100%',zIndex:1000
+        }}>
             {/* Logo */}
             <div className="logo-container">
                 <a href="/admin" className="logo">

@@ -32,7 +32,7 @@ const ReceiverInfoPage = () => {
                 if (response.status === 200) {
                     const itemsWithSelection = response.data.chiTietGioHangs.map((item) => ({
                         ...item,
-                        selected: false,
+                        selected: false, quantity: item.soLuong
                     }));
                     setCartItems(itemsWithSelection);
                 } else {
@@ -125,11 +125,16 @@ const ReceiverInfoPage = () => {
                 receiverName: receiverInfo.name,
                 receiverPhone: receiverInfo.phone,
                 receiverAddress: receiverInfo.address,
-                sanPhams: selectedItems.map(item => item.sanPham),
+                sanPhams: selectedItems.map(item => ({
+                    ...item.sanPham,
+                    quantity: item.quantity // Thêm trường số lượng vào từng sản phẩm
+                })),
                 totalPrice,
                 shippingFee,
                 paymentMethod,
                 finalTotalPrice: totalPrice + shippingFee,
+                // quantity:
+                quantity: selectedItems.reduce((total, item) => total + item.soLuong, 0) // Tổng số lượng
             };
 
             console.log("Order Data:", orderData); // Thêm log để kiểm tra dữ liệu

@@ -120,7 +120,7 @@ const BrandTable = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container" style={{ marginTop: 100 }}>
             <h2>Danh Sách Thương Hiệu</h2>
             <table className="table table-bordered">
                 <thead>

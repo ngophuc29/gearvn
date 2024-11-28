@@ -25,6 +25,7 @@ import AddBrandForm from "./Page/Admin/Component/AddBrandForm";
 import ReceiverInfoPage from "./Page/ReceiverInfoPage";
 import OrderTable from "./Page/Admin/Component/OrderTable";
 import OrderStatistics from "./Page/Admin/Component/OrderStatistics";
+import WebsiteStatistics from "./Page/Admin/Component/WebsiteStatistics";
 // Layouts
 function UserLayout({ children }) {
   return (
@@ -318,6 +319,27 @@ function App() {
 
 
                     <OrderStatistics />
+                  </div>
+                </div>
+              </AdminLayout>
+            }
+          />
+
+          {/* Statistics */}
+          <Route
+            path="/admin/statistics"
+            element={
+              <AdminLayout>
+                <HeaderAdmin />
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '17%' }}>
+
+                    <SidebarAdmin />
+                  </div>
+                  <div style={{ width: '80%' }}>
+
+
+                    <WebsiteStatistics />
                   </div>
                 </div>
               </AdminLayout>

@@ -118,7 +118,7 @@ const AddSupplierForm = () => {
     };
 
     return (
-        <div className="container">
+        <div className="container" style={{ marginTop: 100 }}>
             <h1>Thêm Nhà Cung Cấp</h1>
             <form onSubmit={handleSubmit}>
                 <div className="form-group">
@@ -164,13 +164,13 @@ const AddSupplierForm = () => {
                     Thêm Nhà Cung Cấp
                 </button>
                 {/* Cập nhật và xóa button */}
-                <button
+                {/* <button
                     type="button"
                     className="btn btn-warning ml-2"
                     onClick={() => setModalShow(true)}
                 >
                     Cập Nhật / Xóa
-                </button>
+                </button> */}
             </form>
 
             {modalShow && (

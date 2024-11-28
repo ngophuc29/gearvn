@@ -30,7 +30,7 @@ const OrderStatistics = () => {
     }
 
     return (
-        <div className="container mt-4">
+        <div className="container  " style={{ marginTop: 130 }}>
             <div className="row">
                 <div className="col-lg-4 mb-3">
                     <div className="card text-white bg-primary mb-3">

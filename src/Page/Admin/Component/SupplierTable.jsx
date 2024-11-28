@@ -91,7 +91,7 @@ const SupplierTable = () => {
     }
 
     return (
-        <div className="container">
+        <div className="container" style={{ marginTop: 100 }}>
             <h1>Danh Sách Nhà Cung Cấp</h1>
             <table className="table table-bordered">
                 <thead>

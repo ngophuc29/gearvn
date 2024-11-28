@@ -169,12 +169,12 @@ const Sidebar = () => {
                         </a>
                         {isStatisticMenuOpen && (
                             <ul className="treeview-menu">
-                                <li>
+                                {/* <li>
                                     <a href="#">
                                         <i className="fa fa-circle-o"></i> Tổng Quan
                                     </a>
-                                </li>
-                                <li>
+                                </li> */}
+                                <li onClick={() => navigate("/admin/statistics")}>
                                     <a href="#">
                                         <i className="fa fa-circle-o"></i> Chi Tiết
                                     </a>
