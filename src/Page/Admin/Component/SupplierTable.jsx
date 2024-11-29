@@ -7,7 +7,8 @@ const SupplierTable = () => {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [selectedSupplier, setSelectedSupplier] = useState(null);
-    const [formData, setFormData] = useState({ id:"",tenNCC: "", diaChi: "", email: "" });
+    const [formData, setFormData] = useState({ id: "", tenNCC: "", diaChi: "", email: "" });
+    const [searchTerm, setSearchTerm] = useState(""); // Thêm state tìm kiếm
 
     // Fetch nhà cung cấp
     useEffect(() => {
@@ -39,7 +40,6 @@ const SupplierTable = () => {
             }
         }
     };
-
 
     // Mở modal cập nhật
     const handleUpdate = (supplier) => {
@@ -85,6 +85,10 @@ const SupplierTable = () => {
         }
     };
 
+    // Lọc danh sách nhà cung cấp theo tên
+    const filteredSuppliers = suppliers.filter(supplier =>
+        supplier.tenNhaCungCap.toLowerCase().includes(searchTerm.toLowerCase())
+    );
 
     if (loading) {
         return <div>Loading...</div>;
@@ -93,11 +97,21 @@ const SupplierTable = () => {
     return (
         <div className="container" style={{ marginTop: 100 }}>
             <h1>Danh Sách Nhà Cung Cấp</h1>
+
+            {/* Ô tìm kiếm */}
+            <input
+                type="text"
+                className="form-control"
+                placeholder="Tìm kiếm theo tên nhà cung cấp..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ marginBottom: '20px', width: '300px' }}
+            />
+
             <table className="table table-bordered">
                 <thead>
                     <tr>
-                        <th>STT</th> {/* Số Thứ Tự */}
-                        {/* <th>Mã</th> */}
+                        <th>STT</th>
                         <th>Tên Nhà Cung Cấp</th>
                         <th>Địa Chỉ</th>
                         <th>Email</th>
@@ -105,10 +119,9 @@ const SupplierTable = () => {
                     </tr>
                 </thead>
                 <tbody>
-                    {suppliers.map((supplier, index) => (
+                    {filteredSuppliers.map((supplier, index) => (
                         <tr key={supplier.maNhaCungCap}>
-                            <td>{index + 1}</td> {/* Số Thứ Tự */}
-                            {/* <td>{supplier.maNhaCungCap}</td> */}
+                            <td>{index + 1}</td>
                             <td>{supplier.tenNhaCungCap}</td>
                             <td>{supplier.diaChi}</td>
                             <td>{supplier.email}</td>
@@ -118,14 +131,14 @@ const SupplierTable = () => {
                                         className="btn btn-primary btn-sm"
                                         onClick={() => handleUpdate(supplier)}
                                     >
-                                        Update
+                                        Cập nhật
                                     </button>
                                     &nbsp;
                                     <button
                                         className="btn btn-danger btn-sm"
                                         onClick={() => handleDelete(supplier.maNhaCungCap)}
                                     >
-                                        Delete
+                                        Xóa
                                     </button>
                                 </div>
                             </td>
@@ -133,7 +146,6 @@ const SupplierTable = () => {
                     ))}
                 </tbody>
             </table>
-
 
             {/* Modal Cập Nhật */}
             <Modal show={showModal} onHide={() => setShowModal(false)}>

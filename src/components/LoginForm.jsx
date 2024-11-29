@@ -29,7 +29,9 @@ const LoginForm = () => {
                 const token = response.data.token;
                 localStorage.setItem("token", token); // Lưu token
                 localStorage.setItem("currentUser", JSON.stringify({ username })); // Lưu thông tin người dùng
-                navigate("/"); // Chuyển hướng về trang chủ
+
+                // Truyền trạng thái vào navigate
+                navigate("/", { state: { isLoggedIn: true, username } }); // Truyền trạng thái đăng nhập
             } else {
                 alert("Tên đăng nhập hoặc mật khẩu không chính xác!");
             }
@@ -38,6 +40,7 @@ const LoginForm = () => {
             alert("Đăng nhập không thành công. Vui lòng thử lại!");
         }
     };
+
 
     return (
         <div className="card">

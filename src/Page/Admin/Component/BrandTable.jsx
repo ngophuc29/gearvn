@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Modal, Button, Form } from "react-bootstrap";
+
 const buttonStyle = (isDisabled, isActive) => ({
     padding: '8px 16px',
     margin: '0 5px',
@@ -23,14 +24,14 @@ const BrandTable = () => {
     const [selectedBrand, setSelectedBrand] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 10; // Mỗi trang hiển thị 10 mục
+    const [searchTerm, setSearchTerm] = useState(""); // Thêm state cho ô tìm kiếm
+    const itemsPerPage = 10;
 
-    // Fetch danh sách thương hiệu
     useEffect(() => {
         const fetchBrands = async () => {
             try {
                 const response = await axios.get("http://localhost:9998/api/admin/sanpham/thuonghieu");
-                setBrands(response.data.data); // Cập nhật danh sách thương hiệu
+                setBrands(response.data.data);
             } catch (error) {
                 console.error("Error fetching brands:", error);
             } finally {
@@ -41,35 +42,30 @@ const BrandTable = () => {
         fetchBrands();
     }, []);
 
-    // Tính toán tổng số trang
     const totalPages = Math.ceil(brands.length / itemsPerPage);
 
-    // Xử lý phân trang
     const handlePageChange = (pageNumber) => {
         if (pageNumber >= 1 && pageNumber <= totalPages) {
             setCurrentPage(pageNumber);
         }
     };
 
-    // Lấy các mục trên trang hiện tại
-    const paginatedBrands = brands.slice(
-        (currentPage - 1) * itemsPerPage,
-        currentPage * itemsPerPage
-    );
+    const paginatedBrands = brands
+        .filter((brand) =>
+            brand.tenThuongHieu.toLowerCase().includes(searchTerm.toLowerCase()) // Lọc theo tên thương hiệu
+        )
+        .slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
 
-    // Mở modal để chỉnh sửa thương hiệu
     const openUpdateModal = (brand) => {
-        setSelectedBrand(brand); // Đặt thương hiệu được chọn
-        setShowModal(true); // Hiển thị modal
+        setSelectedBrand(brand);
+        setShowModal(true);
     };
 
-    // Đóng modal
     const closeModal = () => {
         setShowModal(false);
         setSelectedBrand(null);
     };
 
-    // Xử lý cập nhật thương hiệu
     const handleUpdateBrand = async () => {
         if (!selectedBrand.tenThuongHieu.trim()) {
             alert("Tên thương hiệu không được để trống!");
@@ -80,11 +76,10 @@ const BrandTable = () => {
                 `http://localhost:9998/api/admin/sanpham/thuonghieu/capnhat/${selectedBrand.maThuongHieu}`,
                 selectedBrand
             );
-            const { isUpdated, data, status } = response.data; // Lấy các trường phù hợp từ phản hồi
+            const { isUpdated, data, status } = response.data;
 
             if (status === "success" && isUpdated) {
                 alert("Cập nhật thương hiệu thành công!");
-                // Cập nhật lại danh sách thương hiệu với dữ liệu trả về từ API
                 setBrands((prevBrands) =>
                     prevBrands.map((brand) =>
                         brand.maThuongHieu === data.maThuongHieu ? data : brand
@@ -100,7 +95,6 @@ const BrandTable = () => {
         }
     };
 
-    // Xử lý xóa thương hiệu
     const handleDeleteBrand = async (id) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa thương hiệu này?")) {
             try {
@@ -109,7 +103,6 @@ const BrandTable = () => {
                 );
                 if (response.data.status === "success") {
                     alert("Xóa thương hiệu thành công!");
-                    // Cập nhật lại danh sách thương hiệu sau khi xóa
                     setBrands((prevBrands) => prevBrands.filter((brand) => brand.maThuongHieu !== id));
                 } else {
                     alert("Xóa thương hiệu thất bại!");
@@ -128,6 +121,16 @@ const BrandTable = () => {
     return (
         <div className="container" style={{ marginTop: 100 }}>
             <h2>Danh Sách Thương Hiệu</h2>
+
+            {/* Ô tìm kiếm */}
+            <input
+                type="text"
+                placeholder="Tìm theo tên thương hiệu..."
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                style={{ marginBottom: '20px', padding: '8px', width: '100%', maxWidth: '300px' }}
+            />
+
             <table className="table table-bordered">
                 <thead>
                     <tr>
@@ -166,7 +169,6 @@ const BrandTable = () => {
                 </tbody>
             </table>
 
-            {/* Hiển thị phân trang với nút tùy chỉnh */}
             <div style={{ marginTop: '20px', textAlign: 'center' }}>
                 <button
                     onClick={() => handlePageChange(currentPage - 1)}

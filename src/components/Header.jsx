@@ -5,10 +5,11 @@ import "../css/index.css";
 import "../css/product.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-
+import { useLocation } from "react-router-dom"; // Import useLocation
 const Header = () => {
     const [currentUser, setCurrentUser] = useState(null);
     const [token, setToken] = useState(null);
+    const location = useLocation(); 
     const navigate = useNavigate()
     useEffect(() => {
         // Kiểm tra người dùng đăng nhập từ localStorage
@@ -21,7 +22,11 @@ const Header = () => {
             console.log("token :",token)
             setToken(token);
         }
-    }, []);
+        // Kiểm tra trạng thái từ location
+        if (location.state?.isLoggedIn) {
+            setCurrentUser({ username: location.state.username });
+        }
+    }, [location])
 
     const handleLogout = async () => {
         try {

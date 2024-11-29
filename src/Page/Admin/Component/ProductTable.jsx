@@ -7,6 +7,10 @@ const ProductTable = () => {
     const [loading, setLoading] = useState(true);
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
+
+    const [searchQuery, setSearchQuery] = useState(""); // Thêm state tìm kiếm
+
+
     const [formData, setFormData] = useState({
         tenSanPham: "",
         heDieuHanh: "",
@@ -63,6 +67,15 @@ const ProductTable = () => {
         };
         fetchProducts();
     }, []);
+
+    const handleSearchChange = (e) => {
+        setSearchQuery(e.target.value); // Cập nhật query tìm kiếm
+    };
+
+    // Hàm lọc sản phẩm theo tên
+    const filteredProducts = products.filter(product =>
+        product.tenSanPham.toLowerCase().includes(searchQuery.toLowerCase())
+    );
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -303,8 +316,17 @@ const ProductTable = () => {
 
     return (
         <div className="container-fluid " style={{ marginTop: 100 }}>
+            
+            <input
+                type="text"
+                placeholder="Tìm kiếm theo tên sản phẩm..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                style={{ marginBottom: "10px", padding: "5px" }}
+            />
+
             <h1>Danh Sách Sản Phẩm</h1>
-            {products.length === 0 ? (
+            {filteredProducts.length === 0 ? (
                 <p>Không có sản phẩm nào.</p>
             ) : (
                 <>
