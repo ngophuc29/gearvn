@@ -13,7 +13,7 @@ const OrderTable = () => {
     // Gọi API lấy dữ liệu đơn hàng
     useEffect(() => {
         axios
-            .get("http://localhost:9998/api/orders")
+            .get("http://localhost:9998/api/admin/orders")
             .then((response) => {
                 setOrders(response.data);
             })
@@ -38,7 +38,7 @@ const OrderTable = () => {
     const handleDelete = (id) => {
         if (window.confirm("Bạn có chắc muốn xóa đơn hàng này?")) {
             axios
-                .post(`http://localhost:9998/api/orders/delete/${id}`)
+                .post(`http://localhost:9998/api/admin/orders/delete/${id}`)
                 .then(() => {
                     alert("Đơn hàng đã được xóa.");
                     setOrders(orders.filter((order) => order.id !== id)); // Xóa khỏi danh sách hiển thị
@@ -58,7 +58,7 @@ const OrderTable = () => {
     // Hàm lưu cập nhật đơn hàng
     const handleSaveUpdate = () => {
         axios
-            .put(`http://localhost:9998/api/orders/${selectedOrder.id}`, selectedOrder)
+            .put(`http://localhost:9998/api/admin/orders/${selectedOrder.id}`, selectedOrder)
             .then((response) => {
                 setOrders(orders.map(order => (order.id === selectedOrder.id ? response.data.data : order)));
                 setShowUpdateModal(false);

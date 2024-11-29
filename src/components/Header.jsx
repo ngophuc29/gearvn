@@ -4,24 +4,57 @@ import "../css/all.css";
 import "../css/index.css";
 import "../css/product.css";
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const Header = () => {
     const [currentUser, setCurrentUser] = useState(null);
-const navigate=useNavigate()
+    const [token, setToken] = useState(null);
+    const navigate = useNavigate()
     useEffect(() => {
         // Kiểm tra người dùng đăng nhập từ localStorage
         const user = localStorage.getItem("currentUser");
+        const token = localStorage.getItem("token");
         if (user) {
             setCurrentUser(user);
         }
+        if (token) {
+            console.log("token :",token)
+            setToken(token);
+        }
     }, []);
 
-    const handleLogout = () => {
-        localStorage.removeItem("currentUser");
-        alert("Đăng xuất thành công!");
-        setCurrentUser(null);
-        window.location.href = "../html/index.html"; // Hoặc đổi sang route phù hợp với React Router
-    };
+    const handleLogout = async () => {
+        try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
+
+            const response = await axios.post("http://localhost:9998/auth/logout", {
+                
+                token: token,
+                
+                withCredentials: true,
+            });
+            if (response.status === 200) { 
+
+                localStorage.removeItem("currentUser");
+                alert("Đăng xuất thành công!");
+                setCurrentUser(null);
+                setToken(null)
+                localStorage.removeItem("token");
+                // window.location.href = "../html/index.html"; // Hoặc đổi sang route phù hợp với React Router
+                navigate("/")
+            }
+        
+            
+        }
+        catch (error) {
+            console.error("Lỗi khi kết nối tới API:", error);
+        }
+    }
+       
 
     return (
         <>
@@ -50,26 +83,29 @@ const navigate=useNavigate()
                     </div>
                     <div className="col-md-6 my-2 p-1">
                         <ul id="top-contact">
-                           
-                            <li className="list-inline-item mx-2" onClick={()=>navigate("/cart")}>
-                                <a href=" " style={{textDecoration:'none'}}>
+
+                            <li className="list-inline-item mx-2" onClick={() => navigate("/cart")}>
+                                <a href=" " style={{ textDecoration: 'none' }}>
                                     <i className="fa-solid fa-cart-shopping"></i> Giỏ hàng
                                 </a>
                             </li>
-                            <li className="list-inline-item mx-2" onClick={()=>navigate('/signup')}>
-                                <a href="" style={{ textDecoration: 'none' }}>
-                                    <i className="fa-solid fa-key"></i> Đăng ký
-                                </a>
-                            </li>
+
                             {!currentUser ? (
-                                <li className="list-inline-item mx-2 active" onClick={() => navigate('/login')}>
-                                    <a href="" id="logInLink" style={{ textDecoration: 'none' }}>
-                                        <i className="fa-solid fa-right-from-bracket"></i> Đăng nhập
-                                    </a>
-                                </li>
+                                <>
+                                    <li className="list-inline-item mx-2" onClick={() => navigate('/signup')}>
+                                        <a href="" style={{ textDecoration: 'none' }}>
+                                            <i className="fa-solid fa-key"></i> Đăng ký
+                                        </a>
+                                    </li>
+                                    <li className="list-inline-item mx-2 active" onClick={() => navigate('/login')}>
+                                        <a href="" id="logInLink" style={{ textDecoration: 'none' }}>
+                                            <i className="fa-solid fa-right-from-bracket"></i> Đăng nhập
+                                        </a>
+                                    </li>
+                                </>
                             ) : (
                                 <li className="list-inline-item mx-2" id="logoutItem">
-                                        <a href="#!" id="logoutLink" onClick={handleLogout} style={{ textDecoration: 'none' }}>
+                                    <a href="#!" id="logoutLink" onClick={handleLogout} style={{ textDecoration: 'none' }}>
                                         <i className="fa-solid fa-sign-out-alt"></i> Đăng xuất
                                     </a>
                                 </li>
@@ -86,8 +122,8 @@ const navigate=useNavigate()
 
             {/* Navbar */}
             <nav className="navbar navbar-expand-xl navbar-dark sticky-top p-2" id="navbar-menu">
-                <a className="navbar-brand" href="" onClick={()=>navigate("/")}>
-                    <img src="https://file.hstatic.net/200000636033/file/logo_fd11946b31524fbe98765f34f3de0628.svg" alt="logo" style={{ width: "200px" ,marginLeft:20}} />
+                <a className="navbar-brand" href="" onClick={() => navigate("/")}>
+                    <img src="https://file.hstatic.net/200000636033/file/logo_fd11946b31524fbe98765f34f3de0628.svg" alt="logo" style={{ width: "200px", marginLeft: 20 }} />
                 </a>
                 {/* <a href="../html/index.html" className="navbar-brand font-weight-bold">
                     TopBag
@@ -111,7 +147,7 @@ const navigate=useNavigate()
                                 <i className="fa fa-home"></i> TRANG CHỦ
                             </a>
                         </li>
-                        <li className="nav-item" onClick={()=>navigate("/product")}>
+                        <li className="nav-item" onClick={() => navigate("/product")}>
                             <a className="nav-link" href="">
                                 <i className="fa fa-shop"></i> CỬA HÀNG
                             </a>
@@ -148,7 +184,7 @@ const navigate=useNavigate()
                             </div>
                         </li> */}
                         <li className="nav-item"
-                        onClick={()=>navigate("/cart")}
+                            onClick={() => navigate("/cart")}
                         >
                             <a className="nav-link" href="">
                                 <i className="fa-solid fa-money-check-dollar"></i> THANH TOÁN

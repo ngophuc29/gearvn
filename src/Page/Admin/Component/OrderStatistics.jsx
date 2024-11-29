@@ -8,7 +8,7 @@ const OrderStatistics = () => {
     useEffect(() => {
         const fetchStatistics = async () => {
             try {
-                const response = await axios.get("http://localhost:9998/api/orders/summary");
+                const response = await axios.get("http://localhost:9998/api/admin/orders/summary");
                 setStatistics(response.data);
             } catch (error) {
                 console.error("Có lỗi xảy ra khi lấy dữ liệu thống kê:", error);

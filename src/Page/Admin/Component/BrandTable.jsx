@@ -71,17 +71,23 @@ const BrandTable = () => {
 
     // Xử lý cập nhật thương hiệu
     const handleUpdateBrand = async () => {
+        if (!selectedBrand.tenThuongHieu.trim()) {
+            alert("Tên thương hiệu không được để trống!");
+            return;
+        }
         try {
             const response = await axios.put(
-                `http://localhost:9998/api/admin/sanpham/thuonghieu/capnhat/${selectedBrand.id}`,
+                `http://localhost:9998/api/admin/sanpham/thuonghieu/capnhat/${selectedBrand.maThuongHieu}`,
                 selectedBrand
             );
-            if (response.data.success) {
+            const { isUpdated, data, status } = response.data; // Lấy các trường phù hợp từ phản hồi
+
+            if (status === "success" && isUpdated) {
                 alert("Cập nhật thương hiệu thành công!");
-                // Cập nhật lại danh sách thương hiệu
+                // Cập nhật lại danh sách thương hiệu với dữ liệu trả về từ API
                 setBrands((prevBrands) =>
                     prevBrands.map((brand) =>
-                        brand.id === selectedBrand.id ? selectedBrand : brand
+                        brand.maThuongHieu === data.maThuongHieu ? data : brand
                     )
                 );
                 closeModal();
@@ -90,7 +96,7 @@ const BrandTable = () => {
             }
         } catch (error) {
             console.error("Error updating brand:", error);
-            alert("Cập nhật thương hiệu thất bại!");
+            alert(`Cập nhật thương hiệu thất bại! Lỗi: ${error.response?.data?.message || error.message}`);
         }
     };
 
@@ -104,7 +110,7 @@ const BrandTable = () => {
                 if (response.data.status === "success") {
                     alert("Xóa thương hiệu thành công!");
                     // Cập nhật lại danh sách thương hiệu sau khi xóa
-                    setBrands((prevBrands) => prevBrands.filter((brand) => brand.id !== id));
+                    setBrands((prevBrands) => prevBrands.filter((brand) => brand.maThuongHieu !== id));
                 } else {
                     alert("Xóa thương hiệu thất bại!");
                 }
@@ -149,7 +155,7 @@ const BrandTable = () => {
                                     <button
                                         className="btn btn-danger btn-sm"
                                         style={{ width: '70px', height: '40px' }}
-                                        onClick={() => handleDeleteBrand(brand.id)}
+                                        onClick={() => handleDeleteBrand(brand.maThuongHieu)}
                                     >
                                         Xóa
                                     </button>

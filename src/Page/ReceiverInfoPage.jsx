@@ -46,6 +46,43 @@ const ReceiverInfoPage = () => {
         fetchCart();
     }, []);
 
+    
+    useEffect(() => {
+        const fetchData = async () => {
+            try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                    return;
+                }
+
+                const response = await axios.get("http://localhost:9998/api/home/my-info", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                    withCredentials: true,
+                });
+
+                if (response.status === 200) {
+                    console.log("Info: ", response.data);
+                    // Cập nhật receiverInfo với name và phone
+                    setReceiverInfo((prevInfo) => ({
+                        ...prevInfo,
+                        name: `${response.data.lastName} ${response.data.firstName} `, // Gộp firstName và lastName
+                        phone: response.data.phone,
+                    }));
+                } else {
+                    console.warn("Có lỗi xảy ra khi gọi API.");
+                }
+            } catch (error) {
+                console.error("Lỗi khi kết nối tới API:", error);
+            }
+        };
+
+        fetchData();
+    }, []);
+
+
     useEffect(() => {
         if (state) {
             setSelectedItems(state.selectedItems);

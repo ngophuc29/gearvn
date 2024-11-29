@@ -20,11 +20,11 @@ const CartComponent = () => {
                     }));
                     setCartItems(itemsWithSelection);
                 } else {
-                    alert("Có lỗi xảy ra khi lấy giỏ hàng");
+                    // alert("Có lỗi xảy ra khi lấy giỏ hàng");
                 }
             } catch (error) {
                 console.error(error);
-                alert("Không thể kết nối với API giỏ hàng");
+                // alert("Không thể kết nối với API giỏ hàng");
             }
         };
         fetchCart();

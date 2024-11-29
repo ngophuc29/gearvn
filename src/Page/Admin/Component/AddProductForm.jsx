@@ -24,7 +24,8 @@ const AddProductForm = () => {
         hinhAnh: '',
         chiphiLuuKho: '1000000',
         chiPhiQuanLy: '500000',
-        phantramloinhan: '20'
+        phantramloinhan: '20',
+        soLuong: ''
     });
 
     const [errors, setErrors] = useState({});
@@ -70,7 +71,7 @@ const AddProductForm = () => {
         if (!formData.chiPhiQuanLy) newErrors.chiPhiQuanLy = 'Chi phí quản lý là bắt buộc';
         if (!formData.phantramloinhan) newErrors.phantramloinhan = 'Phần trăm lợi nhuận là bắt buộc';
         if (!formData.tinhNangKhac) newErrors.tinhNangKhac = 'Tính năng khác là bắt buộc';
-
+        if (!formData.soLuong) newErrors.soLuong = 'Số lượng là bắt buộc'; // Kiểm tra trường soLuong
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
@@ -118,7 +119,8 @@ const AddProductForm = () => {
                     hinhAnh: '',
                     chiphiLuuKho: '1000000',
                     chiPhiQuanLy: '500000',
-                    phantramloinhan: '20'
+                    phantramloinhan: '20',
+                    soLuong: ''
                 });
             } catch (error) {
                 console.error("Lỗi khi gửi dữ liệu: ", error.response ? error.response.data : error.message);
@@ -169,6 +171,7 @@ const AddProductForm = () => {
             case 'chiphiLuuKho': return '1000000';
             case 'chiPhiQuanLy': return '500000';
             case 'phantramloinhan': return '20';
+            
             default:
                 return '';
         }
@@ -553,6 +556,11 @@ const AddProductForm = () => {
                     }}>
                         Thêm sản phẩm
                     </button>
+                </div>
+                <div className="form-group">
+                    <label htmlFor="soLuong">Số Lượng</label>
+                    <input type="number" className="form-control" id="soLuong" name="soLuong" value={formData.soLuong} onChange={handleChange} required />
+                    {errors.soLuong && <div className="text-danger">{errors.soLuong}</div>}
                 </div>
             </form>
         </div>

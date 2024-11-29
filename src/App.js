@@ -124,7 +124,7 @@ function App() {
             }
           />
           <Route
-            path="/admin/home"
+            path="/admin"
             element={
               <AdminLayout>
                 <HeaderAdmin />

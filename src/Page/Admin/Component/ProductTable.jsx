@@ -30,6 +30,7 @@ const ProductTable = () => {
         chiphiLuuKho: "",
         chiPhiQuanLy: "",
         phantramloinhan: "",
+        soLuong: ""
     });
     const buttonStyle = (isDisabled, isActive) => ({
         padding: '8px 16px',
@@ -52,7 +53,7 @@ const ProductTable = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get("http://localhost:9998/api/san-pham/laptop");
+                const response = await axios.get("http://localhost:9998/api/admin/sanpham/laptop");
                 setProducts(response.data.data.sanphams || []);
             } catch (error) {
                 console.error("Error fetching products:", error);
@@ -86,7 +87,7 @@ const ProductTable = () => {
 
     const fetchProducts = async () => {
         try {
-            const response = await axios.get("http://localhost:9998/api/san-pham/laptop");
+            const response = await axios.get("http://localhost:9998/api/admin/sanpham/laptop");
             setProducts(response.data.data.sanphams || []);
         } catch (error) {
             console.error("Error fetching products:", error);
@@ -119,6 +120,7 @@ const ProductTable = () => {
             chiphiLuuKho: product.chiTietNhapHangs?.[0]?.chiPhiLuuKho || '',
             chiPhiQuanLy: product.chiTietNhapHangs?.[0]?.chiPhiQuanLy || '',
             phantramloinhan: product.chiTietNhapHangs?.[0]?.phanTramLoiNhuan || '',
+            soLuong: product.chiTietNhapHangs?.[0]?.soLuong || ''
         });
         setShowModal(true);
     };
@@ -209,7 +211,8 @@ const ProductTable = () => {
                 donGiaNhapNCC: formData.donGiaNhapNCC,
                 chiphiLuuKho: formData.chiphiLuuKho,
                 chiPhiQuanLy: formData.chiPhiQuanLy,
-                phantramloinhan: formData.phantramloinhan
+                phantramloinhan: formData.phantramloinhan,
+                soLuong: formData.soLuong
             };
 
             const response = await axios.put(
@@ -299,7 +302,7 @@ const ProductTable = () => {
     };
 
     return (
-        <div className="container-fluid " style={{marginTop:100}}>
+        <div className="container-fluid " style={{ marginTop: 100 }}>
             <h1>Danh Sách Sản Phẩm</h1>
             {products.length === 0 ? (
                 <p>Không có sản phẩm nào.</p>
@@ -317,6 +320,7 @@ const ProductTable = () => {
                                 <th>Giá Nhập</th>
                                 <th>Chi Phí</th>
                                 <th>Tính Năng Khác</th>
+                                <th>Số Lượng </th>
                                 <th>Hành Động</th>
                             </tr>
                         </thead>
@@ -338,6 +342,7 @@ const ProductTable = () => {
                                     <td>{product.chiTietNhapHangs[0]?.donGiaNhap}</td>
                                     <td>{product.chiTietNhapHangs[0]?.chiPhiLuuKho}</td>
                                     <td>{product.lapTop?.tinhNangKhac}</td>
+                                    <td>{product.chiTietNhapHangs[0]?.soLuong}</td>
                                     <td>
                                         <div style={{ display: 'flex', justifyContent: 'space-around' }}>
 
@@ -681,7 +686,7 @@ const ProductTable = () => {
                             <div className="form-group col-md-4">
                                 <label>Đơn Giá Nhập Nhà Cung Cấp</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     name="donGiaNhapNCC"
                                     value={formData.donGiaNhapNCC}
@@ -691,7 +696,7 @@ const ProductTable = () => {
                             <div className="form-group col-md-4">
                                 <label>Chi Phí Lưu Kho</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     name="chiphiLuuKho"
                                     value={formData.chiphiLuuKho}
@@ -701,7 +706,7 @@ const ProductTable = () => {
                             <div className="form-group col-md-4">
                                 <label>Chi Phí Quản Lý</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     name="chiPhiQuanLy"
                                     value={formData.chiPhiQuanLy}
@@ -711,10 +716,20 @@ const ProductTable = () => {
                             <div className="form-group col-md-4">
                                 <label>Phần Trăm Lợi Nhuận</label>
                                 <input
-                                    type="text"
+                                    type="number"
                                     className="form-control"
                                     name="phantramloinhan"
                                     value={formData.phantramloinhan}
+                                    onChange={handleInputChange}
+                                />
+                            </div>
+                            <div className="form-group col-md-4">
+                                <label>Số Lượng </label>
+                                <input
+                                    type="number"
+                                    className="form-control"
+                                    name="soLuong"
+                                    value={formData.soLuong}
                                     onChange={handleInputChange}
                                 />
                             </div>
