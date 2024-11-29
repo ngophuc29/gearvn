@@ -52,30 +52,30 @@ const navigate=useNavigate()
                         <ul id="top-contact">
                            
                             <li className="list-inline-item mx-2" onClick={()=>navigate("/cart")}>
-                                <a href=" ">
+                                <a href=" " style={{textDecoration:'none'}}>
                                     <i className="fa-solid fa-cart-shopping"></i> Giỏ hàng
                                 </a>
                             </li>
                             <li className="list-inline-item mx-2" onClick={()=>navigate('/signup')}>
-                                <a href="">
+                                <a href="" style={{ textDecoration: 'none' }}>
                                     <i className="fa-solid fa-key"></i> Đăng ký
                                 </a>
                             </li>
                             {!currentUser ? (
                                 <li className="list-inline-item mx-2 active" onClick={() => navigate('/login')}>
-                                    <a href="" id="logInLink">
+                                    <a href="" id="logInLink" style={{ textDecoration: 'none' }}>
                                         <i className="fa-solid fa-right-from-bracket"></i> Đăng nhập
                                     </a>
                                 </li>
                             ) : (
                                 <li className="list-inline-item mx-2" id="logoutItem">
-                                    <a href="#!" id="logoutLink" onClick={handleLogout}>
+                                        <a href="#!" id="logoutLink" onClick={handleLogout} style={{ textDecoration: 'none' }}>
                                         <i className="fa-solid fa-sign-out-alt"></i> Đăng xuất
                                     </a>
                                 </li>
                             )}
                             <li className="list-inline-item mx-2">
-                                <a href="../html/lien-he.html">
+                                <a href="" style={{ textDecoration: 'none' }}>
                                     <i className="fa-solid fa-info-circle"></i> Liên hệ
                                 </a>
                             </li>

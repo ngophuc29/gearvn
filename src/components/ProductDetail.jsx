@@ -156,8 +156,8 @@ const ProductDetail = () => {
                         MUA NGAY
                     </button>
                     
-                    <button onClick={clearCart}>Xóa toàn bộ giỏ hàng</button>
-                    <button onClick={viewCart}>Xem giỏ hàng</button>
+                    {/* <button onClick={clearCart}>Xóa toàn bộ giỏ hàng</button>
+                    <button onClick={viewCart}>Xem giỏ hàng</button> */}
                     <ul className="features">
                         <p>✔ Bảo hành chính hãng 12 tháng.</p>
                         <p>✔ Hỗ trợ đổi trả trong 7 ngày.</p>
