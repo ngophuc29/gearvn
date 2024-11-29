@@ -59,7 +59,7 @@ const OrderStatistics = () => {
                             <li key={index} className="list-group-item d-flex justify-content-between align-items-center">
                                 <div>
                                     <strong>{productName}</strong> <br />
-                                    <span>{count} sản phẩm</span>
+                                    {/* <span>{count} sản phẩm</span> */}
                                 </div>
                                 <span className="badge bg-success fs-6">{revenue.toLocaleString("vi-VN")}₫</span>
                             </li>

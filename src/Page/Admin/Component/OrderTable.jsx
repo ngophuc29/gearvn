@@ -42,6 +42,7 @@ const OrderTable = () => {
                         <th>Receiver Phone</th>
                         <th>Receiver Address</th>
                         <th>Products</th>
+                        <th>Quantity</th>
                         <th>Total Price</th>
                         <th>Shipping Fee</th>
                         <th>Final Total Price</th>
@@ -64,6 +65,7 @@ const OrderTable = () => {
                                     ))}
                                 </ul>
                             </td>
+                            <td>{order.quantity.toLocaleString()}   </td>
                             <td>{order.totalPrice.toLocaleString()} VND</td>
                             <td>{order.shippingFee.toLocaleString()} VND</td>
                             <td>{order.finalTotalPrice.toLocaleString()} VND</td>

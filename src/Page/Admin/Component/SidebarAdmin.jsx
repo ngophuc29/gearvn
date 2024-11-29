@@ -11,9 +11,13 @@ const Sidebar = () => {
     const [isSupplierMenuOpen, setIsSupplierMenuOpen] = useState(false); // Thêm state cho Nhà Cung Cấp
     const [isBrandMenuOpen, setIsBrandMenuOpen] = useState(false);
 
-
+    // Thêm state cho Quản lý Người Dùng
+    const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
     const toggleMenu = (menu) => {
         switch (menu) {
+            case 'user':
+                setIsUserMenuOpen(!isUserMenuOpen);
+                break;
             case 'banner':
                 setIsBannerMenuOpen(!isBannerMenuOpen);
                 break;
@@ -45,8 +49,31 @@ const Sidebar = () => {
         <aside className="main-sidebar">
             <section className="sidebar">
                 <ul className="sidebar-menu" data-widget="tree">
+
+                    {/* Quản lý Người Dùng */}
+                    <li className={`treeview ${isUserMenuOpen ? 'active' : ''}`}>
+                        <a href="#" onClick={() => toggleMenu('user')}>
+                            <i className="fa fa-user"></i>
+                            <span>Quản lý Người Dùng</span>
+                            <i className="fa fa-angle-left pull-right" style={{ marginLeft: 'auto' }}></i>
+                        </a>
+                        {isUserMenuOpen && (
+                            <ul className="treeview-menu">
+                                <li onClick={() => navigate("/admin/userList")}>
+                                    <a href="#">
+                                        <i className="fa fa-circle-o"></i> Danh Sách Người Dùng
+                                    </a>
+                                </li>
+                                <li onClick={() => navigate("/admin/add-user")}>
+                                    <a href="#">
+                                        <i className="fa fa-circle-o"></i> Thêm Mới
+                                    </a>
+                                </li>
+                            </ul>
+                        )}
+                    </li>
                     {/* Quản lý Danh Mục */}
-                    <li className={`treeview ${isCategoryMenuOpen ? 'active' : ''}`}>
+                    {/* <li className={`treeview ${isCategoryMenuOpen ? 'active' : ''}`}>
                         <a href="#" onClick={() => toggleMenu('category')}>
                             <i className="fa fa-th-large"></i>
                             <span>Quản lý Danh Mục</span>
@@ -66,7 +93,7 @@ const Sidebar = () => {
                                 </li>
                             </ul>
                         )}
-                    </li>
+                    </li> */}
 
                     {/* Quản lý Sản Phẩm */}
                     <li className={`treeview ${isProductMenuOpen ? 'active' : ''}`}>
