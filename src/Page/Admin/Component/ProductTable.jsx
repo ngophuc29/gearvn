@@ -8,8 +8,7 @@ const ProductTable = () => {
     const [showModal, setShowModal] = useState(false);
     const [selectedProduct, setSelectedProduct] = useState(null);
 
-    const [searchQuery, setSearchQuery] = useState(""); // Thêm state tìm kiếm
-
+    const [searchTerm, setSearchTerm] = useState("");
 
     const [formData, setFormData] = useState({
         tenSanPham: "",
@@ -52,7 +51,7 @@ const ProductTable = () => {
         transition: 'background-color 0.3s ease',
     });
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 7; // Change this to the number of items you want per page
+    const itemsPerPage = 6; // Change this to the number of items you want per page
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -67,15 +66,6 @@ const ProductTable = () => {
         };
         fetchProducts();
     }, []);
-
-    const handleSearchChange = (e) => {
-        setSearchQuery(e.target.value); // Cập nhật query tìm kiếm
-    };
-
-    // Hàm lọc sản phẩm theo tên
-    const filteredProducts = products.filter(product =>
-        product.tenSanPham.toLowerCase().includes(searchQuery.toLowerCase())
-    );
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -314,19 +304,36 @@ const ProductTable = () => {
         });
     };
 
+
+    const filteredProducts = products.filter((product) =>
+        product.tenSanPham.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    const paginateFilteredProducts = () => {
+        const indexOfLastProduct = currentPage * itemsPerPage;
+        const indexOfFirstProduct = indexOfLastProduct - itemsPerPage;
+        return filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
+    };
+
     return (
         <div className="container-fluid " style={{ marginTop: 100 }}>
-            
-            <input
-                type="text"
-                placeholder="Tìm kiếm theo tên sản phẩm..."
-                value={searchQuery}
-                onChange={handleSearchChange}
-                style={{ marginBottom: "10px", padding: "5px" }}
-            />
 
+            <div style={{ marginBottom: '20px', textAlign: 'center' }}>
+                <input
+                    type="text"
+                    placeholder="Tìm kiếm sản phẩm..."
+                    value={searchTerm}
+                    onChange={(e) => setSearchTerm(e.target.value)}
+                    style={{
+                        width: '50%',
+                        padding: '10px',
+                        borderRadius: '4px',
+                        border: '1px solid #ccc',
+                        fontSize: '16px',
+                    }}
+                />
+            </div>
             <h1>Danh Sách Sản Phẩm</h1>
-            {filteredProducts.length === 0 ? (
+            {products.length === 0 ? (
                 <p>Không có sản phẩm nào.</p>
             ) : (
                 <>
@@ -347,7 +354,7 @@ const ProductTable = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            {paginateProducts().map((product, index) => (
+                                {paginateFilteredProducts().map((product, index) => (
                                 <tr key={product.id}>
                                     <td>{index + 1 + (currentPage - 1) * itemsPerPage}</td>
                                     <td>{product.tenSanPham}</td>
@@ -765,7 +772,7 @@ const ProductTable = () => {
             </Modal>
 
 
-        </div>
+        </div>  
     );
 };
 
