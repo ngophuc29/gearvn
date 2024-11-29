@@ -26,6 +26,8 @@ import ReceiverInfoPage from "./Page/ReceiverInfoPage";
 import OrderTable from "./Page/Admin/Component/OrderTable";
 import OrderStatistics from "./Page/Admin/Component/OrderStatistics";
 import WebsiteStatistics from "./Page/Admin/Component/WebsiteStatistics";
+import AddUserForm from "./Page/Admin/Component/AddUserForm";
+import UserTable from "./Page/Admin/Component/UserTable";
 // Layouts
 function UserLayout({ children }) {
   return (
@@ -340,6 +342,47 @@ function App() {
 
 
                     <WebsiteStatistics />
+                  </div>
+                </div>
+              </AdminLayout>
+            }
+          />
+
+          {/* User */}
+          <Route
+            path="/admin/userList"
+            element={
+              <AdminLayout>
+                <HeaderAdmin />
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '17%' }}>
+
+                    <SidebarAdmin />
+                  </div>
+                  <div style={{ width: '80%' }}>
+
+
+                    <UserTable />
+                  </div>
+                </div>
+              </AdminLayout>
+            }
+          />
+
+          <Route
+            path="/admin/add-user"
+            element={
+              <AdminLayout>
+                <HeaderAdmin />
+                <div style={{ display: 'flex' }}>
+                  <div style={{ width: '17%' }}>
+
+                    <SidebarAdmin />
+                  </div>
+                  <div style={{ width: '80%' }}>
+
+
+                    <AddUserForm />
                   </div>
                 </div>
               </AdminLayout>
