@@ -7,7 +7,7 @@ const ProductList = () => {
     const [productList, setProductList] = useState([]);
     const [filteredProducts, setFilteredProducts] = useState([]);
     const [currentPage, setCurrentPage] = useState(1);
-    const itemsPerPage = 12;
+    const itemsPerPage = 7;
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
