@@ -111,15 +111,11 @@ const Header = () => {
                             ) : (
                                 <li className="list-inline-item mx-2" id="logoutItem">
                                     <a href="#!" id="logoutLink" onClick={handleLogout} style={{ textDecoration: 'none' }}>
-                                        <i className="fa-solid fa-sign-out-alt"></i> Đăng xuất
+                                            <i className="fa-solid fa-sign-out-alt"></i> {currentUser.username} - Đăng xuất
                                     </a>
                                 </li>
                             )}
-                            <li className="list-inline-item mx-2">
-                                <a href="" style={{ textDecoration: 'none' }}>
-                                    <i className="fa-solid fa-info-circle"></i> Liên hệ
-                                </a>
-                            </li>
+                             
                         </ul>
                     </div>
                 </div>
@@ -204,7 +200,7 @@ const Header = () => {
 
                     <form id="nav-form-search" className="form-inline ml-auto" action="javascript:void(0);">
                         <div className="input-group" id="input-search-top">
-                            <input
+                            {/* <input
                                 type="text"
                                 name="query"
                                 id="query"
@@ -216,7 +212,7 @@ const Header = () => {
                                 <button className="btn btn-outline-secondary bg-light" type="submit">
                                     <i className="fas fa-search"></i>
                                 </button>
-                            </div>
+                            </div> */}
                         </div>
                     </form>
                 </div>

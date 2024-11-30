@@ -13,7 +13,22 @@ const AddBrandForm = () => {
         }
 
         try {
-            const response = await axios.post("http://localhost:9998/api/admin/sanpham/thuonghieu/them", { tenThuongHieu: brandName });
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
+
+            const response = await axios.post(
+                "http://localhost:9998/api/admin/sanpham/thuonghieu/them",
+                { tenThuongHieu: brandName },
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            );
+
             if (response.data.status === "success" && response.data.isCreated) {
                 alert("Thêm thương hiệu thành công!");
                 setBrandName(""); // Xóa input sau khi thêm thành công

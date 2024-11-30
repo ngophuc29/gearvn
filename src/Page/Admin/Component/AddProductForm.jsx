@@ -92,7 +92,17 @@ const AddProductForm = () => {
 
         if (validate()) {
             try {
-                const response = await axios.post('http://localhost:9998/api/admin/sanpham/them-san-pham', cleanedFormData);
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                    return;
+                }
+                const response = await axios.post('http://localhost:9998/api/admin/sanpham/them-san-pham', cleanedFormData, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                });
+                console.log("Token:", token);
                 console.log("Response: ", response); // Kiểm tra phản hồi từ backend
                 alert('Sản phẩm đã được thêm thành công!');
 
@@ -124,7 +134,7 @@ const AddProductForm = () => {
                 });
             } catch (error) {
                 console.error("Lỗi khi gửi dữ liệu: ", error.response ? error.response.data : error.message);
-                alert('Lỗi khi thêm sản phẩm!');
+                alert(`Lỗi khi thêm sản phẩm: ${error.response ? error.response.data.message : error.message}`);
             }
         }
     };

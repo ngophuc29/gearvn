@@ -10,6 +10,7 @@ const AddUserForm = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [role, setRole] = useState('');
+    const [phone, setPhone] = useState(''); // Thêm state cho phone
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -20,11 +21,22 @@ const AddUserForm = () => {
             username,
             email,
             password,
-            role
+            role,
+            phone // Thêm phone vào đối tượng newUser
         };
 
         try {
-            await axios.post('http://localhost:4000/api/users', newUser);
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
+            await axios.post('http://localhost:9998/api/admin/user/add', newUser, {
+                headers: {
+                    'Content-Type': 'application/json',
+                    Authorization: `Bearer ${token}`
+                }
+            });
             navigate('/admin/userList'); // Chuyển hướng đến danh sách người dùng
         } catch (error) {
             console.error('There was an error creating the user!', error);
@@ -85,6 +97,16 @@ const AddUserForm = () => {
                     />
                 </div>
                 <div className="form-group">
+                    <label>Số Điện Thoại</label>
+                    <input
+                        type="text"
+                        className="form-control"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        required
+                    />
+                </div>
+                <div className="form-group">
                     <label>Quyền</label>
                     <select
                         className="form-control"
@@ -97,6 +119,7 @@ const AddUserForm = () => {
                         <option value="USER">User</option>
                     </select>
                 </div>
+               
                 <button type="submit" className="btn btn-primary">Thêm Người Dùng</button>
             </form>
         </div>

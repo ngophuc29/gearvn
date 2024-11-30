@@ -10,7 +10,7 @@ const UserTable = () => {
         id: '',
         firstName: '',
         lastName: '',
-        username: '',
+        // username: '',
         email: '',
         phone: '',
         role: ''
@@ -50,24 +50,50 @@ const UserTable = () => {
 
     const handleUpdateUser = async (e) => {
         e.preventDefault();
-        if (!formData.username) {
-            alert('Username is required');
-            return;
-        }
-        console.log("username :",formData.username)
-        try {
-            await axios.put(`http://localhost:9998/api/home/user/${formData.id}`, formData);
 
-            setUsers(users.map(user => (user.id === formData.id ? formData : user)));
-            handleCloseModal();
+        const data = new FormData();
+        data.append('id', formData.id || "");
+        data.append('firstName', formData.firstName || "");
+        data.append('lastName', formData.lastName || "");
+        data.append('username', formData.username);
+        data.append('email', formData.email || "");
+        data.append('phone', formData.phone || "");
+        data.append('role', formData.role || "USER");
+
+        console.log("Payload:", data); // Kiểm tra dữ liệu đầu vào
+
+        try {
+            const response = await axios.put(
+                `http://localhost:9998/api/home/user/${formData.id}`,
+                data, {
+                headers: {
+                    Connection: "keep-alive",
+                    "Content-Type": "form-data"
+                }
+            });
+
+            if (response.status === 200) {
+                const updatedUser = response.data; // Kết quả trả về từ API
+                setUsers((prevUsers) =>
+                    prevUsers.map((user) =>
+                        user.id === updatedUser.id ? updatedUser : user
+                    )
+                );
+                alert('Cập nhật thành công!');
+                handleCloseModal();
+            } else {
+                console.error('Error:', response);
+                alert('Có lỗi xảy ra trong quá trình cập nhật!');
+            }
         } catch (error) {
-            console.error('There was an error updating the user!', error);
+            console.error('Error updating user:', error);
+            alert('Có lỗi xảy ra trong quá trình cập nhật!');
         }
     };
 
     const handleDelete = async (id) => {
         try {
-            await axios.delete(`http://localhost:9998/api/home/user/${id}`);
+            await axios.delete(`http://localhost:9998/api/home/user/delete/${id}`);
             alert('Người dùng đã bị xóa!');
             setUsers(users.filter(user => user.id !== id));
         } catch (error) {
@@ -83,7 +109,7 @@ const UserTable = () => {
                     <tr>
                         <th>STT</th>
                         <th>ID</th>
-                        <th>Reference ID</th>
+                        {/* <th>Reference ID</th> */}
                         <th>Họ</th>
                         <th>Tên</th>
                         <th>Tên Đăng Nhập</th>
@@ -98,7 +124,7 @@ const UserTable = () => {
                         <tr key={user.id}>
                             <td>{index + 1}</td>
                             <td>{user.id}</td>
-                            <td>{user.referenceId}</td>
+                            {/* <td>{user.referenceId}</td> */}
                             <td>{user.firstName}</td>
                             <td>{user.lastName}</td>
                             <td>{user.username}</td>

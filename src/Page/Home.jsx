@@ -15,7 +15,7 @@ function Home() {
             <CompanyServices />
             {/* <ProductCategories /> */}
             <FlashSale />
-            <CartAsolute />
+            {/* <CartAsolute /> */}
         </div>
     );
 }

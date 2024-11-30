@@ -55,11 +55,20 @@ const ProductTable = () => {
 
     useEffect(() => {
         const fetchProducts = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             try {
-                const response = await axios.get("http://localhost:9998/api/admin/sanpham/laptop");
+                const response = await axios.get("http://localhost:9998/api/admin/sanpham/laptop", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
                 setProducts(response.data.data.sanphams || []);
             } catch (error) {
-                console.error("Error fetching products:", error);
+                console.error("Error fetching products:", error.response ? error.response.data : error.message);
             } finally {
                 setLoading(false);
             }
@@ -89,11 +98,20 @@ const ProductTable = () => {
     }, []);
 
     const fetchProducts = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+            return;
+        }
         try {
-            const response = await axios.get("http://localhost:9998/api/admin/sanpham/laptop");
+            const response = await axios.get("http://localhost:9998/api/admin/sanpham/laptop", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            });
             setProducts(response.data.data.sanphams || []);
         } catch (error) {
-            console.error("Error fetching products:", error);
+            console.error("Error fetching products:", error.response ? error.response.data : error.message);
         } finally {
             setLoading(false);
         }
@@ -217,15 +235,24 @@ const ProductTable = () => {
                 phantramloinhan: formData.phantramloinhan,
                 soLuong: formData.soLuong
             };
-
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             const response = await axios.put(
                 `http://localhost:9998/api/admin/sanpham/update/${selectedProduct.maSanPham}`,
-                updatedData
+                updatedData, // Dữ liệu form được gửi ở đây
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
 
             if (response.data.status === "success") {
                 alert("Cập nhật thành công!");
-                fetchProducts()
+                fetchProducts();
                 setProducts(
                     products.map((product) =>
                         product.maSanPham === selectedProduct.maSanPham
@@ -238,7 +265,7 @@ const ProductTable = () => {
                 alert("Cập nhật thất bại!");
             }
         } catch (error) {
-            console.error("Cập nhật thất bại:", error.response || error);
+            console.error("Cập nhật thất bại:", error.response ? error.response.data : error.message);
             alert("Có lỗi xảy ra khi cập nhật sản phẩm!");
         }
     };
@@ -249,9 +276,19 @@ const ProductTable = () => {
     // Xử lý xóa sản phẩm
     const handleDelete = async (id) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa sản phẩm này?")) {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             try {
                 const response = await axios.delete(
-                    `http://localhost:9998/api/admin/sanpham/xoa/${id}`
+                    `http://localhost:9998/api/admin/sanpham/xoa/${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
                 );
                 if (response.data.status === "success") {
                     alert("Xóa sản phẩm thành công!");
@@ -261,7 +298,7 @@ const ProductTable = () => {
                     alert("Xóa sản phẩm thất bại!");
                 }
             } catch (error) {
-                console.error("Error deleting product:", error);
+                console.error("Error deleting product:", error.response ? error.response.data : error.message);
                 alert("Xóa sản phẩm thất bại!");
             }
         }

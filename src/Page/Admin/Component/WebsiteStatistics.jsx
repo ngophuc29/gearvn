@@ -9,8 +9,17 @@ const WebsiteStatistics = () => {
 
     useEffect(() => {
         const fetchStatistics = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             try {
-                const response = await axios.get('http://localhost:9998/api/admin/summary');
+                const response = await axios.get('http://localhost:9998/api/admin/summary', {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
                 const data = response.data;
 
                 if (Array.isArray(data.productsByBrand) &&
@@ -28,7 +37,7 @@ const WebsiteStatistics = () => {
                     throw new Error('Dữ liệu không hợp lệ');
                 }
             } catch (error) {
-                console.error('Có lỗi xảy ra khi lấy dữ liệu thống kê:', error);
+                console.error('Có lỗi xảy ra khi lấy dữ liệu thống kê:', error.response ? error.response.data : error.message);
                 setError('Có lỗi xảy ra khi lấy dữ liệu thống kê.');
             }
         };

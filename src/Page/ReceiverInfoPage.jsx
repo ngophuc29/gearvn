@@ -375,7 +375,7 @@ const ReceiverInfoPage = () => {
                                 <p>
                                     <strong>Mã QR thanh toán:</strong>
                                     <img
-                                        src="https://www.example.com/qr-code.png" // Thay thế bằng URL của mã QR thực tế
+                                        src="https://i.imgur.com/spvphip.png" // Thay thế bằng URL của mã QR thực tế
                                         alt="QR Code"
                                         style={{ width: "100px", height: "100px", objectFit: "cover", borderRadius: "8px" }}
                                     />

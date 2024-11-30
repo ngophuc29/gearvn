@@ -30,8 +30,17 @@ const SupplierTable = () => {
     const handleDelete = async (id) => {
         const confirmDelete = window.confirm("Bạn có chắc muốn xóa nhà cung cấp này không?");
         if (confirmDelete) {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             try {
-                await axios.delete(`http://localhost:9998/api/admin/nhacungcap/xoa/${id}`);
+                await axios.delete(`http://localhost:9998/api/admin/nhacungcap/xoa/${id}`, {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
                 alert("Xóa nhà cung cấp thành công!");
                 setSuppliers(suppliers.filter((supplier) => supplier.maNhaCungCap !== id));
             } catch (error) {
@@ -61,9 +70,19 @@ const SupplierTable = () => {
     // Submit cập nhật nhà cung cấp
     const handleUpdateSubmit = async () => {
         try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             const response = await axios.put(
                 `http://localhost:9998/api/admin/nhacungcap/capnhat/${selectedSupplier.maNhaCungCap}`,
-                formData
+                formData, // Dữ liệu form được gửi ở đây
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
 
             if (response.data.isUpdated) {
@@ -80,15 +99,19 @@ const SupplierTable = () => {
                 alert("Không tìm thấy nhà cung cấp để cập nhật.");
             }
         } catch (error) {
-            console.error("Cập nhật thất bại:", error);
+            console.error("Cập nhật thất bại:", error.response ? error.response.data : error.message);
             alert("Cập nhật thất bại!");
         }
     };
 
     // Lọc danh sách nhà cung cấp theo tên
+    // const filteredSuppliers = suppliers.filter(supplier =>
+    //     supplier.tenNhaCungCap.toLowerCase().includes(searchTerm.toLowerCase())
+    // );
     const filteredSuppliers = suppliers.filter(supplier =>
-        supplier.tenNhaCungCap.toLowerCase().includes(searchTerm.toLowerCase())
+        supplier.tenNhaCungCap && supplier.tenNhaCungCap.toLowerCase().includes(searchTerm.toLowerCase())
     );
+
 
     if (loading) {
         return <div>Loading...</div>;

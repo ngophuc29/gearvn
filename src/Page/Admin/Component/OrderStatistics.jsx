@@ -7,16 +7,25 @@ const OrderStatistics = () => {
 
     useEffect(() => {
         const fetchStatistics = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             try {
-                const response = await axios.get("http://localhost:9998/api/admin/orders/summary");
+                const response = await axios.get("http://localhost:9998/api/admin/orders/summary", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
                 setStatistics(response.data);
             } catch (error) {
-                console.error("Có lỗi xảy ra khi lấy dữ liệu thống kê:", error);
+                console.error("Có lỗi xảy ra khi lấy dữ liệu thống kê:", error.response ? error.response.data : error.message);
             }
         };
 
         fetchStatistics();
-    }, []);
+    }, []); // Mảng dependency trống để chỉ chạy một lần khi component mount
 
     if (!statistics) {
         return (

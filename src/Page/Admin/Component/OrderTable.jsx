@@ -12,13 +12,22 @@ const OrderTable = () => {
 
     // Gọi API lấy dữ liệu đơn hàng
     useEffect(() => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+            return;
+        }
         axios
-            .get("http://localhost:9998/api/admin/orders")
+            .get("http://localhost:9998/api/admin/orders", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            })
             .then((response) => {
                 setOrders(response.data);
             })
             .catch((error) => {
-                console.error("Error fetching orders:", error);
+                console.error("Error fetching orders:", error.response ? error.response.data : error.message);
             });
     }, []);
 
@@ -36,15 +45,29 @@ const OrderTable = () => {
 
     // Hàm xử lý xóa đơn hàng
     const handleDelete = (id) => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+            return;
+        }
         if (window.confirm("Bạn có chắc muốn xóa đơn hàng này?")) {
             axios
-                .post(`http://localhost:9998/api/admin/orders/delete/${id}`)
+                .post(
+                    `http://localhost:9998/api/admin/orders/delete/${id}`,
+                    {}, // Dữ liệu rỗng vì đây là yêu cầu xóa
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
+                )
                 .then(() => {
                     alert("Đơn hàng đã được xóa.");
-                    setOrders(orders.filter((order) => order.id !== id)); // Xóa khỏi danh sách hiển thị
+                    setOrders((prevOrders) => prevOrders.filter((order) => order.id !== id)); // Xóa khỏi danh sách hiển thị
                 })
                 .catch((error) => {
-                    console.error("Error deleting order:", error);
+                    console.error("Error deleting order:", error.response ? error.response.data : error.message);
+                    alert("Xóa đơn hàng thất bại. Vui lòng thử lại.");
                 });
         }
     };
@@ -57,17 +80,34 @@ const OrderTable = () => {
 
     // Hàm lưu cập nhật đơn hàng
     const handleSaveUpdate = () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+            return;
+        }
         axios
-            .put(`http://localhost:9998/api/admin/orders/${selectedOrder.id}`, selectedOrder)
+            .put(
+                `http://localhost:9998/api/admin/orders/${selectedOrder.id}`,
+                selectedOrder, // Dữ liệu form được gửi ở đây
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
+            )
             .then((response) => {
-                setOrders(orders.map(order => (order.id === selectedOrder.id ? response.data.data : order)));
+                setOrders((prevOrders) =>
+                    prevOrders.map((order) =>
+                        order.id === selectedOrder.id ? response.data.data : order
+                    )
+                );
                 setShowUpdateModal(false);
             })
             .catch((error) => {
-                console.error("Error updating order:", error);
+                console.error("Error updating order:", error.response ? error.response.data : error.message);
+                alert("Cập nhật đơn hàng thất bại. Vui lòng thử lại.");
             });
     };
-
     // Hàm xử lý thay đổi giá trị trong form cập nhật
     const handleChange = (e) => {
         const { name, value } = e.target;

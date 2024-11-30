@@ -29,8 +29,17 @@ const BrandTable = () => {
 
     useEffect(() => {
         const fetchBrands = async () => {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
             try {
-                const response = await axios.get("http://localhost:9998/api/admin/sanpham/thuonghieu");
+                const response = await axios.get("http://localhost:9998/api/admin/sanpham/thuonghieu", {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    },
+                });
                 setBrands(response.data.data);
             } catch (error) {
                 console.error("Error fetching brands:", error);
@@ -71,10 +80,20 @@ const BrandTable = () => {
             alert("Tên thương hiệu không được để trống!");
             return;
         }
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+            return;
+        }
         try {
             const response = await axios.put(
                 `http://localhost:9998/api/admin/sanpham/thuonghieu/capnhat/${selectedBrand.maThuongHieu}`,
-                selectedBrand
+                selectedBrand, // Dữ liệu form được gửi ở đây
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
             const { isUpdated, data, status } = response.data;
 
@@ -98,8 +117,18 @@ const BrandTable = () => {
     const handleDeleteBrand = async (id) => {
         if (window.confirm("Bạn có chắc chắn muốn xóa thương hiệu này?")) {
             try {
+                const token = localStorage.getItem("token");
+                if (!token) {
+                    console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                    return;
+                }
                 const response = await axios.delete(
-                    `http://localhost:9998/api/admin/sanpham/thuonghieu/xoa/${id}`
+                    `http://localhost:9998/api/admin/sanpham/thuonghieu/xoa/${id}`,
+                    {
+                        headers: {
+                            Authorization: `Bearer ${token}`
+                        }
+                    }
                 );
                 if (response.data.status === "success") {
                     alert("Xóa thương hiệu thành công!");

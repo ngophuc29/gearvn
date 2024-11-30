@@ -54,9 +54,20 @@ const AddSupplierForm = () => {
         if (!validate()) return;
 
         try {
+            const token = localStorage.getItem("token");
+            if (!token) {
+                console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+                return;
+            }
+
             const response = await axios.post(
                 "http://localhost:9998/api/admin/nhacungcap/them",
-                formData
+                formData, // Dữ liệu form được gửi ở đây
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
 
             const { data } = response.data;
@@ -77,10 +88,20 @@ const AddSupplierForm = () => {
     };
 
     const handleUpdate = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+            return;
+        }
         try {
             const response = await axios.put(
                 `http://localhost:9998/api/admin/nhacungcap/capnhat/${currentSupplier.tenNCC}`,
-                formData
+                formData, // Dữ liệu form được gửi ở đây
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
 
             if (response.data.isUpdated) {
@@ -98,9 +119,19 @@ const AddSupplierForm = () => {
     };
 
     const handleDelete = async () => {
+        const token = localStorage.getItem("token");
+        if (!token) {
+            console.warn("Không tìm thấy token. Bỏ qua việc gọi API.");
+            return;
+        }
         try {
             const response = await axios.delete(
-                `http://localhost:9998/api/admin/nhacungcap/xoa/${currentSupplier.tenNCC}`
+                `http://localhost:9998/api/admin/nhacungcap/xoa/${currentSupplier.tenNCC}`,
+                {
+                    headers: {
+                        Authorization: `Bearer ${token}`
+                    }
+                }
             );
 
             if (response.data.isDeleted) {
